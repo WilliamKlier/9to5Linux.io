@@ -1,232 +1,27 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8">
-  <title>Linux Database</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #0f1115;
-      color: #e5e7eb;
-      line-height: 1.7;
-    }
-
-    a {
-      color: #7dd3fc;
-      text-decoration: none;
-    }
-
-    header {
-      position: sticky;
-      top: 0;
-      background: #0f1115;
-      border-bottom: 1px solid #1f2933;
-      padding: 1rem 3rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 10;
-    }
-
-    header h1 {
-      font-size: 1.4rem;
-      font-weight: 600;
-      color: #7dd3fc;
-    }
-
-    nav a {
-      margin-left: 1.5rem;
-      font-size: 0.95rem;
-      color: #cbd5e1;
-    }
-
-    nav a:hover {
-      color: #7dd3fc;
-    }
-
-    main {
-      max-width: 1100px;
-      margin: 4rem auto;
-      padding: 0 2rem;
-    }
-
-    .intro {
-      margin-bottom: 4rem;
-    }
-
-    .intro h2 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      font-weight: 600;
-    }
-
-    .intro p {
-      max-width: 750px;
-      color: #cbd5e1;
-    }
-
-    section {
-      margin-bottom: 5rem;
-    }
-
-    section h2 {
-      font-size: 1.6rem;
-      margin-bottom: 1.5rem;
-      font-weight: 600;
-      border-bottom: 1px solid #1f2933;
-      padding-bottom: 0.5rem;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 2rem;
-    }
-
-    .card {
-      background: #111827;
-      border: 1px solid #1f2933;
-      border-radius: 10px;
-      padding: 1.5rem;
-      transition: border 0.2s, transform 0.2s;
-    }
-
-    .card:hover {
-      border-color: #38bdf8;
-      transform: translateY(-4px);
-    }
-
-    .card h3 {
-      font-size: 1.1rem;
-      margin-bottom: 0.6rem;
-      font-weight: 600;
-      color: #e5e7eb;
-    }
-
-    .card p {
-      font-size: 0.95rem;
-      color: #9ca3af;
-    }
-
-    footer {
-      border-top: 1px solid #1f2933;
-      padding: 2rem;
-      text-align: center;
-      color: #6b7280;
-      font-size: 0.85rem;
-    }
-
-    @media (max-width: 600px) {
-      header {
-        flex-direction: column;
-        gap: 0.5rem;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Linux Database</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="icon" href="/favicon.ico">
 </head>
 <body>
-
 <header>
-  <h1>Linux Database</h1>
-  <nav>
-    <a href="#intro">Úvod</a>
-    <a href="#distros">Distribuce</a>
-    <a href="#desktops">Desktop prostředí</a>
-    <a href="#about">O projektu</a>
-  </nav>
+<h1>Linux Database</h1>
+<nav>
+<a href="/distros/">Distribuce</a>
+<a href="/desktops/">Desktop</a>
+<a href="/kernel/">Kernel</a>
+</nav>
 </header>
-
 <main>
-
-  <section id="intro" class="intro">
-    <h2>Co je Linux</h2>
-    <p>
-      Linux je otevřený operační systém založený na unixových principech.
-      Tento web slouží jako přehledná databáze informací o linuxových distribucích,
-      desktopových prostředích a základních pojmech, určená jak pro začátečníky,
-      tak pro pokročilé uživatele.
-    </p>
-  </section>
-
-  <section id="distros">
-    <h2>Distribuce</h2>
-    <div class="grid">
-      <div class="card">
-        <h3>Distribuce pro začátečníky</h3>
-        <p>
-          Přehled jednoduchých a stabilních distribucí vhodných pro první
-          kontakt s Linuxem.
-        </p>
-      </div>
-
-      <div class="card">
-        <h3>Středně pokročilé distribuce</h3>
-        <p>
-          Distribuce nabízející rovnováhu mezi stabilitou, aktualitami
-          a možnostmi konfigurace.
-        </p>
-      </div>
-
-      <div class="card">
-        <h3>Pokročilé distribuce</h3>
-        <p>
-          Distribuce určené zkušeným uživatelům, kteří chtějí maximální kontrolu
-          nad systémem.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section id="desktops">
-    <h2>Desktopová prostředí</h2>
-    <div class="grid">
-      <div class="card">
-        <h3>GNOME</h3>
-        <p>
-          Moderní desktop s důrazem na jednoduchost a pracovní postup.
-        </p>
-      </div>
-
-      <div class="card">
-        <h3>KDE Plasma</h3>
-        <p>
-          Vysoce přizpůsobitelné prostředí s bohatými funkcemi.
-        </p>
-      </div>
-
-      <div class="card">
-        <h3>Xfce</h3>
-        <p>
-          Lehký a stabilní desktop vhodný pro starší hardware.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section id="about">
-    <h2>O projektu</h2>
-    <p>
-      Cílem tohoto projektu je vytvořit dlouhodobě udržovatelnou,
-      technicky přesnou a přehlednou databázi informací o Linuxu bez
-      zbytečného marketingu a fanboyismu.
-    </p>
-  </section>
-
+<section class="intro">
+<h2>O projektu</h2>
+<p>Nezávislá databáze informací o Linuxu: distribuce, desktopová prostředí a vývoj jádra.</p>
+</section>
 </main>
-
-<footer>
-  © 2026 Linux Database
-</footer>
-
+<footer>© 2026 Linux Database</footer>
 </body>
 </html>
