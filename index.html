@@ -1,330 +1,90 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>9to5Linux | Profesionální zpravodajství o systému Linux</title>
-    
-    <meta name="description" content="Nezávislý technologický portál zaměřený na Linux Kernel, desktopová prostředí GNOME/KDE a podnikové distribuce. Analýzy a novinky pro rok 2026.">
-    <meta name="keywords" content="Linux, Kernel 6.13, Fedora, Ubuntu, GNOME 48, Wayland, Open Source">
-    <meta name="author" content="Redakce 9to5Linux">
-    <meta name="robots" content="index, follow">
-    
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>9to5Linux</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset a základní styly */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Roboto', sans-serif; line-height: 1.6; background: #f4f4f4; color: #333; }
+    a { text-decoration: none; color: inherit; }
 
-    <style>
-        /* --- NASTAVENÍ DESIGNU (CSS VARIABLES) --- */
-        :root {
-            --color-primary: #0056b3; /* Profesionální technická modrá */
-            --color-accent: #e95420;  /* "Ubuntu" oranžová pro akcenty */
-            --color-text-main: #111111;
-            --color-text-secondary: #555555;
-            --color-bg-body: #ffffff;
-            --color-bg-light: #f8f9fa;
-            --border-color: #e0e0e0;
-            --container-width: 1200px;
-            --spacing-std: 20px;
-        }
+    /* Kontejner a symetrie */
+    .container { max-width: 1200px; margin: auto; padding: 20px; }
 
-        /* --- RESET & ZÁKLAD --- */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--color-bg-body);
-            color: var(--color-text-main);
-            line-height: 1.6;
-            font-size: 16px;
-            -webkit-font-smoothing: antialiased;
-        }
+    /* Header */
+    header { background: #1e1e1e; color: #fff; padding: 20px 0; text-align: center; border-radius: 10px; }
+    header h1 { font-weight: 700; font-size: 2.5rem; letter-spacing: 2px; }
 
-        a { text-decoration: none; color: inherit; transition: color 0.2s; }
-        a:hover { color: var(--color-primary); }
+    /* Navigace */
+    nav { margin-top: 10px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+    nav a { font-weight: 500; color: #fff; padding: 8px 15px; border-radius: 5px; transition: background 0.3s; }
+    nav a:hover { background: #ff6f61; }
 
-        /* --- HLAVIČKA --- */
-        header {
-            border-bottom: 1px solid var(--border-color);
-            padding: 1rem 0;
-            background: #fff;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+    /* Hlavní obsah */
+    main { margin-top: 40px; display: grid; gap: 30px; }
+    .article { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.3s; }
+    .article:hover { transform: translateY(-5px); }
+    .article img { width: 100%; border-radius: 10px; margin-bottom: 15px; }
+    .article h2 { font-weight: 700; font-size: 1.5rem; margin-bottom: 10px; }
+    .article p { font-size: 1rem; color: #555; }
 
-        .header-inner {
-            max-width: var(--container-width);
-            margin: 0 auto;
-            padding: 0 var(--spacing-std);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    /* Footer */
+    footer { text-align: center; padding: 20px; margin-top: 50px; color: #777; font-size: 0.9rem; }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            color: #000;
-        }
-        .logo span { color: var(--color-accent); }
-
-        nav ul { display: flex; list-style: none; gap: 30px; }
-        nav a {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--color-text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        nav a:hover { color: var(--color-text-main); }
-
-        /* --- HLAVNÍ OBSAH (LAYOUT) --- */
-        .container {
-            max-width: var(--container-width);
-            margin: 40px auto;
-            padding: 0 var(--spacing-std);
-            display: grid;
-            grid-template-columns: 2fr 1fr; /* 2/3 obsah, 1/3 sidebar */
-            gap: 40px;
-        }
-
-        /* --- HERO SEKCE (HLAVNÍ ČLÁNEK) --- */
-        .hero-article {
-            grid-column: 1 / -1; /* Roztáhnout přes celou šířku nahoře */
-            margin-bottom: 40px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 40px;
-        }
-
-        .hero-label {
-            background-color: var(--color-primary);
-            color: #fff;
-            padding: 4px 8px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            border-radius: 2px;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-
-        .hero-article h1 {
-            font-size: 2.5rem;
-            line-height: 1.2;
-            margin-bottom: 15px;
-            font-weight: 800;
-        }
-
-        .hero-article p {
-            font-size: 1.2rem;
-            color: var(--color-text-secondary);
-            max-width: 900px;
-        }
-
-        /* --- SEZNAM ČLÁNKŮ --- */
-        .article-list { display: flex; flex-direction: column; gap: 30px; }
-
-        .article-card {
-            display: flex;
-            gap: 20px;
-            padding-bottom: 30px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .article-content h2 {
-            font-size: 1.4rem;
-            margin-bottom: 10px;
-            line-height: 1.3;
-        }
-
-        .article-meta {
-            font-size: 0.85rem;
-            color: #888;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .category-tag {
-            color: var(--color-accent);
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-        }
-
-        .article-excerpt {
-            color: var(--color-text-secondary);
-            font-size: 1rem;
-        }
-
-        /* --- SIDEBAR (PANEL VPRAVO) --- */
-        aside h3 {
-            font-size: 1.1rem;
-            border-bottom: 2px solid var(--color-text-main);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-        }
-
-        .sidebar-links ul { list-style: none; }
-        .sidebar-links li { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
-        .sidebar-links a { font-weight: 600; line-height: 1.4; display: block; }
-        .sidebar-links span { display: block; font-size: 0.8rem; color: #888; margin-top: 5px; }
-
-        .newsletter-box {
-            background: var(--color-bg-light);
-            padding: 20px;
-            border: 1px solid var(--border-color);
-            margin-top: 40px;
-        }
-
-        /* --- PATIČKA --- */
-        footer {
-            background: #111;
-            color: #fff;
-            padding: 3rem 0;
-            margin-top: 60px;
-        }
-        .footer-inner {
-            max-width: var(--container-width);
-            margin: 0 auto;
-            padding: 0 var(--spacing-std);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .footer-text { font-size: 0.9rem; color: #888; }
-
-        /* --- RESPONZIVITA (MOBIL) --- */
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            nav { display: none; } /* Pro zjednodušení na mobilu */
-            .hero-article h1 { font-size: 1.8rem; }
-            .header-inner { justify-content: center; }
-        }
-    </style>
+    /* Grid pro články (responzivní) */
+    @media (min-width: 768px) {
+      main { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 1024px) {
+      main { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
 </head>
 <body>
-
+  <div class="container">
     <header>
-        <div class="header-inner">
-            <a href="#" class="logo">9to5<span>Linux</span></a>
-            <nav>
-                <ul>
-                    <li><a href="#">Novinky</a></li>
-                    <li><a href="#">Kernel</a></li>
-                    <li><a href="#">Distribuce</a></li>
-                    <li><a href="#">Desktop</a></li>
-                    <li><a href="#">Hardware</a></li>
-                </ul>
-            </nav>
-        </div>
+      <h1>9to5Linux</h1>
+      <nav>
+        <a href="#">Domů</a>
+        <a href="#">Novinky</a>
+        <a href="#">Recenze</a>
+        <a href="#">Návody</a>
+        <a href="#">Kontakt</a>
+      </nav>
     </header>
 
-    <div class="container">
-        
-        <article class="hero-article">
-            <span class="hero-label">Téma týdne</span>
-            <h1>Linux Kernel 6.14: Kompletní přehled změn v plánovači EEVDF a podpora nových GPU</h1>
-            <p>Podrobná technická analýza nadcházející verze jádra. Zaměřili jsme se na výkonnostní dopady nového scheduleru a jak to ovlivní serverové nasazení vs. desktopové hraní.</p>
-        </article>
+    <main>
+      <div class="article">
+        <img src="https://via.placeholder.com/400x200.png?text=Linux+News" alt="Linux News">
+        <h2>Nová verze Ubuntu 26.04 je venku</h2>
+        <p>Ubuntu 26.04 přináší mnoho novinek, včetně aktualizovaného jádra a moderního desktopového prostředí. Perfektní volba pro vývojáře i běžné uživatele.</p>
+      </div>
 
-        <main class="article-list">
-            
-            <article class="article-card">
-                <div class="article-content">
-                    <div class="article-meta">
-                        <span class="category-tag">Desktop Environments</span>
-                        <span>• 19. Ledna 2026</span>
-                    </div>
-                    <h2><a href="#">GNOME 49 vs KDE Plasma 6.4: Kdo vyhrává válku o Wayland?</a></h2>
-                    <p class="article-excerpt">Srovnávací test stability a výkonu na grafických kartách NVIDIA. Zatímco KDE sází na modularitu, GNOME přináší revoluční změny v threadingu mutteru.</p>
-                </div>
-            </article>
+      <div class="article">
+        <img src="https://via.placeholder.com/400x200.png?text=Linux+Tips" alt="Linux Tips">
+        <h2>10 tipů, jak optimalizovat Linux</h2>
+        <p>Objevte nejlepší tipy a triky pro optimalizaci výkonu vašeho Linuxu, od správce balíčků po rychlejší spouštění systému.</p>
+      </div>
 
-            <article class="article-card">
-                <div class="article-content">
-                    <div class="article-meta">
-                        <span class="category-tag">Distribuce</span>
-                        <span>• 18. Ledna 2026</span>
-                    </div>
-                    <h2><a href="#">Fedora 44 Beta: Konec podpory X11 je tady</a></h2>
-                    <p class="article-excerpt">Red Hat naplňuje své sliby. Nová Fedora přichází výhradně s Wayland session. Jak to vyřeší aplikace, které stále spoléhají na Xorg?</p>
-                </div>
-            </article>
+      <div class="article">
+        <img src="https://via.placeholder.com/400x200.png?text=Linux+Apps" alt="Linux Apps">
+        <h2>Top 5 aplikací pro Linux v roce 2026</h2>
+        <p>Poznejte nejlepší open-source aplikace, které nesmí chybět v žádném Linuxovém systému – od editorů až po multimediální nástroje.</p>
+      </div>
 
-            <article class="article-card">
-                <div class="article-content">
-                    <div class="article-meta">
-                        <span class="category-tag">Hardware</span>
-                        <span>• 17. Ledna 2026</span>
-                    </div>
-                    <h2><a href="#">Framework Laptop 16 (Gen 3): Ultimátní linuxový stroj?</a></h2>
-                    <p class="article-excerpt">Recenze třetí generace modulárního notebooku s oficiální podporou Ubuntu LTS a Manjaro. Firmware je konečně plně open-source.</p>
-                </div>
-            </article>
-
-            <article class="article-card">
-                <div class="article-content">
-                    <div class="article-meta">
-                        <span class="category-tag">Server & Cloud</span>
-                        <span>• 16. Ledna 2026</span>
-                    </div>
-                    <h2><a href="#">Migrace z CentOS na AlmaLinux v roce 2026</a></h2>
-                    <p class="article-excerpt">Praktický průvodce pro systémové administrátory. Jak bez výpadku převést produkční servery na novou binárně kompatibilní distribuci.</p>
-                </div>
-            </article>
-
-        </main>
-
-        <aside>
-            <h3>Nepřehlédněte</h3>
-            <div class="sidebar-links">
-                <ul>
-                    <li>
-                        <a href="#">Vydání Debian 13 "Trixie" se blíží</a>
-                        <span>Před 2 hodinami</span>
-                    </li>
-                    <li>
-                        <a href="#">Linus Torvalds o Rustu v jádře: "Je to budoucnost"</a>
-                        <span>Před 5 hodinami</span>
-                    </li>
-                    <li>
-                        <a href="#">Top 5 terminálových nástrojů pro monitoring sítě</a>
-                        <span>Včera</span>
-                    </li>
-                    <li>
-                        <a href="#">Steam Deck 2 má běžet na Arch Linuxu</a>
-                        <span>15. Ledna</span>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="newsletter-box">
-                <h4 style="margin-bottom:10px;">Newsletter 9to5Linux</h4>
-                <p style="font-size:0.9rem; color:#555; margin-bottom:15px;">Získejte týdenní souhrn toho nejdůležitějšího přímo do mailu.</p>
-                <input type="email" placeholder="Váš e-mail" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd;">
-                <button style="width:100%; padding:10px; background:var(--color-primary); color:white; border:none; font-weight:bold; cursor:pointer;">Odebírat</button>
-            </div>
-        </aside>
-
-    </div>
+      <div class="article">
+        <img src="https://via.placeholder.com/400x200.png?text=Linux+Hardware" alt="Linux Hardware">
+        <h2>Hardware kompatibilní s Linuxem</h2>
+        <p>Zjistěte, který hardware je plně kompatibilní s Linuxem a vyhněte se problémům při instalaci a používání.</p>
+      </div>
+    </main>
 
     <footer>
-        <div class="footer-inner">
-            <div class="logo" style="color:#fff;">9to5<span>Linux</span></div>
-            <div class="footer-text">
-                &copy; 2026 9to5Linux.com | Profesionální zpravodajství.<br>
-                <span style="opacity: 0.6; font-size: 0.8rem;">Design optimalizován pro čtení a rychlost.</span>
-            </div>
-            <div style="display:flex; gap:15px;">
-                <a href="#" style="color:#888;">RSS</a>
-                <a href="#" style="color:#888;">Twitter/X</a>
-                <a href="#" style="color:#888;">Mastodon</a>
-            </div>
-        </div>
+      &copy; 2026 9to5Linux. Všechna práva vyhrazena.
     </footer>
-
+  </div>
 </body>
 </html>
