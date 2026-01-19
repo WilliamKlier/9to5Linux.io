@@ -1,531 +1,299 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
 <head>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Technical reference database: Linux kernel versions, subsystems, and environments.">
-    <title>Linux Database</title>
+    
+    <title>9to5Linux | Moderní průvodce světem Open Source</title>
+    <meta name="description" content="Denní zpravodajství o Linuxu, recenze distribucí, návody na terminál a novinky z Open Source komunity. Čtěte 9to5Linux.">
+    <meta name="author" content="9to5Linux Team">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <meta property="og:site_name" content="9to5Linux">
+    <meta property="og:title" content="9to5Linux - Linux pro lidi">
+    <meta property="og:description" content="Váš oblíbený zdroj informací o svobodném softwaru.">
+    <meta property="og:image" content="https://vas-web.cz/og-image.jpg">
+    <meta property="og:type" content="article">
+
     <style>
-        /* THEME: 2009 TERMINAL / SYSADMIN DATABASE
-           - High contrast (Green/Black)
-           - Monospace font stack
-           - No smooth scrolling, no animations, just data.
-        */
+        /* CSS Proměnné - Upravíš na jednom místě a změní se celý web */
         :root {
-            --term-bg: #000000;
-            --term-fg: #00ff00;      /* Classic Green */
-            --term-dim: #008f00;     /* Dimmed Green */
-            --term-alert: #ff0000;   /* Error/Root Red */
-            --term-warn: #ffff00;    /* Warning Yellow */
-            --term-highlight: #1a1a1a;
-            --border: 1px solid #005500;
+            --primary: #ff5722;
+            --primary-hover: #e64a19;
+            --bg-light: #f8f9fa;
+            --bg-card: #ffffff;
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+            --header-bg: rgba(255, 255, 255, 0.9);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
 
+        /* Dark Mode podpora - rok 2026 standard */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-light: #0f172a;
+                --bg-card: #1e293b;
+                --text-main: #f1f5f9;
+                --text-muted: #94a3b8;
+                --header-bg: rgba(15, 23, 42, 0.9);
+            }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
         body {
-            background-color: var(--term-bg);
-            color: var(--term-fg);
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 13px;
-            line-height: 1.4;
-            margin: 0;
-            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.6;
             overflow-x: hidden;
         }
 
-        /* Layout Grid */
-        #layout {
-            display: grid;
-            grid-template-columns: 240px 1fr;
-            min-height: 100vh;
-        }
-
-        /* Sidebar Navigation */
-        aside {
-            background-color: #050505;
-            border-right: var(--border);
-            padding: 15px;
+        /* Header s efektem rozmazání (Glassmorphism) */
+        header {
             position: sticky;
             top: 0;
-            height: 100vh;
-            overflow-y: auto;
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
-        /* Main Data Area */
-        main {
-            padding: 20px 40px;
-            max-width: 1200px;
-        }
-
-        /* Typography & Elements */
-        h1 {
-            font-size: 20px;
-            text-transform: uppercase;
-            border-bottom: 2px solid var(--term-fg);
-            margin: 0 0 20px 0;
-            padding-bottom: 5px;
-        }
-
-        h2 {
-            font-size: 16px;
-            color: #fff;
-            background-color: #004400;
-            padding: 5px 10px;
-            margin-top: 40px;
-            border-left: 5px solid var(--term-fg);
-            text-transform: uppercase;
-        }
-
-        h3 {
-            font-size: 14px;
-            color: var(--term-warn);
-            border-bottom: 1px dashed var(--term-dim);
-            padding-bottom: 2px;
-            margin-top: 25px;
-        }
-
-        p, li {
-            text-align: justify;
-            max-width: 900px;
-            color: #ccc;
-        }
-
-        code {
-            color: var(--term-warn);
-            background: #111;
-            padding: 0 4px;
-        }
-
-        pre {
-            background: #0a0a0a;
-            border: 1px solid #333;
-            color: #ddd;
-            padding: 10px;
-            overflow-x: auto;
-            font-size: 12px;
-        }
-
-        /* Tables - The core "Database" look */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 15px 0;
-            font-size: 12px;
-            border: var(--border);
-        }
-
-        th, td {
-            border: 1px solid #004400;
-            padding: 6px 10px;
-            text-align: left;
-            vertical-align: top;
-        }
-
-        th {
-            background-color: #002200;
-            color: var(--term-fg);
-            text-transform: uppercase;
-        }
-
-        tr:nth-child(even) {
-            background-color: #030303;
-        }
-
-        tr:hover {
-            background-color: #0a0a0a;
-        }
-
-        /* Navigation Links */
-        .nav-link {
-            display: block;
-            color: #888;
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--primary);
             text-decoration: none;
-            padding: 4px 0;
-            border-bottom: 1px dotted #222;
-        }
-        .nav-link:hover {
-            color: var(--term-fg);
-            background-color: #111;
-        }
-        .nav-link::before {
-            content: "[ ] ";
-            color: #444;
-        }
-        .nav-link:hover::before {
-            content: "[x] ";
-            color: var(--term-fg);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: var(--transition);
         }
 
-        /* ASCII Header */
-        .ascii-header {
-            font-size: 10px;
-            white-space: pre;
-            color: var(--term-dim);
-            margin-bottom: 20px;
+        .logo:hover { transform: scale(1.02); }
+
+        nav ul { display: flex; list-style: none; gap: 30px; }
+        nav a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+        nav a:hover { color: var(--primary); }
+
+        /* Hero sekce */
+        .hero {
+            padding: 8rem 5% 6rem;
+            text-align: center;
+            background: radial-gradient(circle at top right, rgba(255,87,34,0.05), transparent);
         }
 
-        /* Utility */
-        .status-ok { color: var(--term-fg); }
-        .status-eol { color: var(--term-alert); }
-        .status-lts { color: var(--term-warn); }
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+        }
 
-        @media (max-width: 800px) {
-            #layout { grid-template-columns: 1fr; }
-            aside { height: auto; position: static; border-right: none; border-bottom: var(--border); }
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .cta-button {
+            background: var(--primary);
+            color: white;
+            padding: 14px 32px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            box-shadow: 0 10px 20px rgba(255,87,34,0.3);
+            transition: var(--transition);
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            background: var(--primary-hover);
+            box-shadow: 0 15px 25px rgba(255,87,34,0.4);
+        }
+
+        /* Grid článků */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 5%; }
+        
+        .section-title {
+            margin-bottom: 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 5rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+        }
+
+        .card .meta {
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .card h3 { margin-bottom: 15px; font-size: 1.5rem; }
+        .card p { color: var(--text-muted); margin-bottom: 20px; flex-grow: 1; }
+
+        /* Footer */
+        footer {
+            background: var(--bg-card);
+            padding: 4rem 5% 2rem;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 3rem;
+        }
+
+        .footer-col h4 { margin-bottom: 20px; font-size: 1.1rem; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col a { text-decoration: none; color: var(--text-muted); transition: 0.2s; }
+        .footer-col a:hover { color: var(--primary); }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Adaptabilita pro mobil */
+        @media (max-width: 768px) {
+            nav { display: none; }
+            .hero { padding-top: 5rem; }
+            .grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-<div id="layout">
-    <aside>
-        <div class="ascii-header">
-  _      _                  
- | |    (_)                 
- | |     _ _ __  _   ___  __
- | |    | | '_ \| | | \ \/ /
- | |____| | | | | |_| |>  < 
- |______|_|_| |_|\__,_/_/\_\
- DATABASE_REF_V1.2
-        </div>
-        <div style="margin-bottom: 20px; border: 1px solid #333; padding: 5px;">
-            USER: root<br>
-            TTY: pts/0<br>
-            LOAD: 0.01 0.04 0.05
-        </div>
-
+    <header>
+        <a href="#" class="logo">
+            <img src="favicon.ico" alt="" style="width: 32px; height: 32px;">
+            9to5Linux
+        </a>
         <nav>
-            <div style="color: #fff; font-weight: bold; margin-bottom: 10px;">> SECTORS</div>
-            <a href="#kernel" class="nav-link">KERNEL_DB</a>
-            <a href="#arch" class="nav-link">ARCHITECTURE</a>
-            <a href="#fs" class="nav-link">FILESYSTEMS</a>
-            <a href="#distros" class="nav-link">DISTRIBUTIONS</a>
-            <a href="#desktop" class="nav-link">ENVIRONMENTS</a>
-            <a href="#graphics" class="nav-link">GRAPHICS_STACK</a>
-            <a href="#cli" class="nav-link">CLI_CMDS</a>
-            <a href="#security" class="nav-link">SECURITY_GATES</a>
+            <ul>
+                <li><a href="#news">Zprávy</a></li>
+                <li><a href="#distro">Distribuce</a></li>
+                <li><a href="#tuts">Návody</a></li>
+                <li><a href="#about">O nás</a></li>
+            </ul>
         </nav>
-    </aside>
+    </header>
 
     <main>
-        <section>
-            <h1>// SYSTEM_DEFINITION</h1>
-            <p>
-                <strong>LINUX</strong> is a monolithic, Unix-like operating system kernel. It provides hardware abstraction, resource management, and process scheduling. The system adheres to POSIX standards.
-            </p>
+        <section class="hero">
+            <h1>Linux bez hranic.<br>Pro lidi, co tvoří budoucnost.</h1>
+            <p>Jsme nezávislý magazín o všem, co pohání váš hardware i servery. Od jádra 6.x až po ty nejmenší vychytávky v terminálu.</p>
+            <a href="#news" class="cta-button">Prozkoumat novinky</a>
         </section>
 
-        <section id="kernel">
-            <h2>// KERNEL_VERSION_DATABASE</h2>
-            <p>Chronological record of mainline kernel development. Narrative removed.</p>
-            <table>
-                <thead>
-                    <tr>
-                        <th width="10%">VER</th>
-                        <th width="15%">RELEASE</th>
-                        <th width="10%">STATUS</th>
-                        <th>TECHNICAL_CHANGELOG</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>0.01</td>
-                        <td>1991-09</td>
-                        <td class="status-eol">OBSOLETE</td>
-                        <td>Initial i386 prototype. No network. Single tasking.</td>
-                    </tr>
-                    <tr>
-                        <td>1.0</td>
-                        <td>1994-03</td>
-                        <td class="status-eol">OBSOLETE</td>
-                        <td>TCP/IP stack integrated. Production ready.</td>
-                    </tr>
-                    <tr>
-                        <td>1.2</td>
-                        <td>1995-03</td>
-                        <td class="status-eol">OBSOLETE</td>
-                        <td>Multi-arch support (Alpha, SPARC, MIPS).</td>
-                    </tr>
-                    <tr>
-                        <td>2.0</td>
-                        <td>1996-06</td>
-                        <td class="status-eol">OBSOLETE</td>
-                        <td>SMP (Symmetric Multiprocessing) enabled.</td>
-                    </tr>
-                    <tr>
-                        <td>2.2</td>
-                        <td>1999-01</td>
-                        <td class="status-eol">OBSOLETE</td>
-                        <td>IPv6 stack. m68k/PowerPC support.</td>
-                    </tr>
-                    <tr>
-                        <td>2.4</td>
-                        <td>2001-01</td>
-                        <td class="status-eol">EOL</td>
-                        <td>USB 1.1 support. ISA PnP. Logical Volume Manager (LVM).</td>
-                    </tr>
-                    <tr>
-                        <td>2.6</td>
-                        <td>2003-12</td>
-                        <td class="status-eol">EOL</td>
-                        <td>Preemptible kernel. ALSA sound. 64-bit support maturity.</td>
-                    </tr>
-                    <tr>
-                        <td>3.0</td>
-                        <td>2011-07</td>
-                        <td class="status-eol">EOL</td>
-                        <td>Numbering reset. Xen Dom0. Btrfs scrubbing.</td>
-                    </tr>
-                    <tr>
-                        <td>4.0</td>
-                        <td>2015-04</td>
-                        <td class="status-eol">EOL</td>
-                        <td>Live Kernel Patching. KASAN.</td>
-                    </tr>
-                    <tr>
-                        <td>5.0</td>
-                        <td>2019-03</td>
-                        <td class="status-lts">LTS</td>
-                        <td>WireGuard VPN. Energy-aware scheduling (EAS).</td>
-                    </tr>
-                    <tr>
-                        <td>6.0</td>
-                        <td>2022-10</td>
-                        <td class="status-ok">STABLE</td>
-                        <td>Rust modules. Runtime Verification. Scheduler overhaul.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
+        <section class="container" id="news">
+            <div class="section-title">
+                <h2>Nejnovější články</h2>
+                <a href="#" style="color: var(--primary); font-weight: 600;">Zobrazit vše →</a>
+            </div>
 
-        <section id="arch">
-            <h2>// SYSTEM_ARCHITECTURE</h2>
-            <pre>
-+---------------------------------------------------+
-|               USER SPACE (Ring 3)                 |
-|  [GUI]  [Browser]  [Shell]  [Daemons]  [Games]    |
-+---------------------------------------------------+
-                       | |
-                  SYSTEM CALLS
-                       | |
-+---------------------------------------------------+
-|              KERNEL SPACE (Ring 0)                |
-|  [VFS]  [IPC]  [Scheduler]  [MM]  [Net Stack]     |
-|              [Device Drivers]                     |
-+---------------------------------------------------+
-                       | |
-+---------------------------------------------------+
-|                 HARDWARE                          |
-|   CPU | RAM | GPU | Disk | Network Interface      |
-+---------------------------------------------------+
-            </pre>
-            <ul>
-                <li><strong>Ring 0:</strong> Highest privilege level. Direct hardware access.</li>
-                <li><strong>Ring 3:</strong> Application level. Protected memory.</li>
-            </ul>
-        </section>
+            <div class="grid">
+                <article class="card">
+                    <span class="meta">Kernel & Systém</span>
+                    <h3>Linux 6.13: Co nás čeká a nemine?</h3>
+                    <p>Podrobný rozbor změn v plánování procesů a vylepšení pro nejnovější procesory od Intelu a AMD.</p>
+                    <a href="#" class="cta-link" style="color: var(--primary); font-weight: 700; text-decoration: none;">Číst analýzu</a>
+                </article>
 
-        <section id="fs">
-            <h2>// FILESYSTEM_HIERARCHY (FHS)</h2>
-            <table>
-                <tr>
-                    <th>MOUNT</th>
-                    <th>CONTENT_TYPE</th>
-                    <th>DESCRIPTION</th>
-                </tr>
-                <tr>
-                    <td>/bin</td>
-                    <td>Binary</td>
-                    <td>Essential user binaries (ls, cp, rm).</td>
-                </tr>
-                <tr>
-                    <td>/boot</td>
-                    <td>Static</td>
-                    <td>Bootloader files (GRUB) and Kernel images (vmlinuz).</td>
-                </tr>
-                <tr>
-                    <td>/dev</td>
-                    <td>Device</td>
-                    <td>Device nodes (sda, tty, zero, null).</td>
-                </tr>
-                <tr>
-                    <td>/etc</td>
-                    <td>Config</td>
-                    <td>Host-specific system configuration.</td>
-                </tr>
-                <tr>
-                    <td>/home</td>
-                    <td>User</td>
-                    <td>User directories and data.</td>
-                </tr>
-                <tr>
-                    <td>/proc</td>
-                    <td>Virtual</td>
-                    <td>Kernel and process information mapped to files.</td>
-                </tr>
-                <tr>
-                    <td>/var</td>
-                    <td>Variable</td>
-                    <td>Logs, spools, caches.</td>
-                </tr>
-            </table>
-        </section>
+                <article class="card">
+                    <span class="meta">Desktop</span>
+                    <h3>GNOME 48 vs KDE Plasma 6.5</h3>
+                    <p>Srovnání dvou gigantů v roce 2026. Které prostředí nabízí lepší workflow pro programátory?</p>
+                    <a href="#" class="cta-link" style="color: var(--primary); font-weight: 700; text-decoration: none;">Zobrazit srovnání</a>
+                </article>
 
-        <section id="distros">
-            <h2>// DISTRIBUTION_MATRIX</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>FAMILY</th>
-                        <th>PKG_MANAGER</th>
-                        <th>FILE_EXT</th>
-                        <th>PRIMARY_USE</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Debian</strong></td>
-                        <td>apt / dpkg</td>
-                        <td>.deb</td>
-                        <td>Stability, Servers, General Desktop (Ubuntu/Mint).</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Red Hat</strong></td>
-                        <td>dnf / rpm</td>
-                        <td>.rpm</td>
-                        <td>Enterprise (RHEL), Workstation (Fedora).</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Arch</strong></td>
-                        <td>pacman</td>
-                        <td>.pkg.tar.zst</td>
-                        <td>Rolling Release, Customization, Power Users.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Slackware</strong></td>
-                        <td>pkgtool</td>
-                        <td>.txz</td>
-                        <td>Unix-purity, Manual config.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Alpine</strong></td>
-                        <td>apk</td>
-                        <td>.apk</td>
-                        <td>Containers, Security, Minimalist.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-        <section id="desktop">
-            <h2>// DESKTOP_ENVIRONMENTS (DE)</h2>
-            <p>Graphical subsystems managing user interaction.</p>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ENV</th>
-                        <th>TOOLKIT</th>
-                        <th>COMPOSITOR_SUPPORT</th>
-                        <th>RESOURCE_USAGE</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>GNOME</td>
-                        <td>GTK 3/4</td>
-                        <td>Mutter (Wayland/X11)</td>
-                        <td>High</td>
-                    </tr>
-                    <tr>
-                        <td>KDE Plasma</td>
-                        <td>Qt 5/6</td>
-                        <td>KWin (Wayland/X11)</td>
-                        <td>Medium</td>
-                    </tr>
-                    <tr>
-                        <td>Xfce</td>
-                        <td>GTK 2/3</td>
-                        <td>Xfwm (X11)</td>
-                        <td>Low</td>
-                    </tr>
-                    <tr>
-                        <td>i3 / Sway</td>
-                        <td>N/A</td>
-                        <td>Tiling (X11 / Wayland)</td>
-                        <td>Very Low</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-        <section id="graphics">
-            <h2>// GRAPHICS_AND_GAMING</h2>
-            <h3>[STACK_LAYERS]</h3>
-            <ul>
-                <li><strong>DRM/KMS:</strong> Kernel modules handling video hardware.</li>
-                <li><strong>Mesa 3D:</strong> Userspace driver implementation (OpenGL/Vulkan).</li>
-                <li><strong>Display Server:</strong> X.Org (Legacy/Networked) vs Wayland (Modern/Secure).</li>
-            </ul>
-
-            <h3>[GAMING_COMPATIBILITY]</h3>
-            <table>
-                <tr>
-                    <th>TECH</th>
-                    <th>FUNCTION</th>
-                </tr>
-                <tr>
-                    <td><strong>Vulkan</strong></td>
-                    <td>Low-level, high-performance 3D API. Explicit GPU control.</td>
-                </tr>
-                <tr>
-                    <td><strong>Wine</strong></td>
-                    <td>Windows syscall translator for POSIX.</td>
-                </tr>
-                <tr>
-                    <td><strong>Proton</strong></td>
-                    <td>Valve's Wine fork + DXVK (DirectX over Vulkan).</td>
-                </tr>
-                <tr>
-                    <td><strong>Shaders</strong></td>
-                    <td>Pre-compiled GPU instructions to reduce stuttering.</td>
-                </tr>
-            </table>
-        </section>
-
-        <section id="cli">
-            <h2>// CLI_COMMAND_REFERENCE</h2>
-            <p>Essential shell interaction binaries.</p>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <div>
-                    <h3>FILE_OPS</h3>
-                    <code>cp [src] [dest]</code> - Copy<br>
-                    <code>mv [src] [dest]</code> - Move/Rename<br>
-                    <code>rm [file]</code> - Remove (Unlink)<br>
-                    <code>chmod [octal] [file]</code> - Mod Perms
-                </div>
-                <div>
-                    <h3>SYSTEM_OPS</h3>
-                    <code>top / htop</code> - Process Monitor<br>
-                    <code>df -h</code> - Disk Free<br>
-                    <code>uname -r</code> - Kernel Ver<br>
-                    <code>systemctl status</code> - Init State
-                </div>
+                <article class="card">
+                    <span class="meta">Bezpečnost</span>
+                    <h3>Zabezpečení Linuxu pro začátečníky</h3>
+                    <p>5 jednoduchých kroků, jak ochránit svůj systém před hrozbami moderního internetu bez ztráty výkonu.</p>
+                    <a href="#" class="cta-link" style="color: var(--primary); font-weight: 700; text-decoration: none;">Chci vědět víc</a>
+                </article>
             </div>
         </section>
-
-        <section id="security">
-            <h2>// SECURITY_MODEL</h2>
-            <ul>
-                <li><strong>DAC:</strong> Discretionary Access Control (rwx permissions).</li>
-                <li><strong>MAC:</strong> Mandatory Access Control (SELinux / AppArmor).</li>
-                <li><strong>Namespaces:</strong> Kernel isolation (basis for Containers/Docker).</li>
-                <li><strong>cgroups:</strong> Resource limitation (CPU/RAM quotas).</li>
-            </ul>
-        </section>
-
     </main>
-</div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>O 9to5Linux</h4>
+                    <p>Jsme komunita nadšenců, kteří věří, že svoboda softwaru mění svět k lepšímu.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Rychlé odkazy</h4>
+                    <ul>
+                        <li><a href="#">Archiv článků</a></li>
+                        <li><a href="#">Podpořte nás</a></li>
+                        <li><a href="#">RSS kanál</a></li>
+                        <li><a href="#">GitHub Repo</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Sledujte nás</h4>
+                    <ul>
+                        <li><a href="#">Mastodon</a></li>
+                        <li><a href="#">X / Twitter</a></li>
+                        <li><a href="#">Telegram</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2026 9to5Linux. Provozováno na <a href="https://pages.github.com" target="_blank">GitHub Pages</a>.
+            </div>
+        </div>
+    </footer>
 
 </body>
 </html>
-
