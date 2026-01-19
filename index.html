@@ -3,295 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>9to5Linux | Zpravodajství a technické analýzy systému Linux</title>
     
-    <title>9to5Linux | Moderní průvodce světem Open Source</title>
-    <meta name="description" content="Denní zpravodajství o Linuxu, recenze distribucí, návody na terminál a novinky z Open Source komunity. Čtěte 9to5Linux.">
-    <meta name="author" content="9to5Linux Team">
+    <meta name="description" content="Odborný portál zaměřený na operační systém Linux, vývoj jádra, distribuce a otevřený software. Přinášíme ověřené informace a technické návody.">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="9to5Linux">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     
-    <meta property="og:site_name" content="9to5Linux">
-    <meta property="og:title" content="9to5Linux - Linux pro lidi">
-    <meta property="og:description" content="Váš oblíbený zdroj informací o svobodném softwaru.">
-    <meta property="og:image" content="https://vas-web.cz/og-image.jpg">
-    <meta property="og:type" content="article">
-
     <style>
-        /* CSS Proměnné - Upravíš na jednom místě a změní se celý web */
         :root {
-            --primary: #ff5722;
-            --primary-hover: #e64a19;
-            --bg-light: #f8f9fa;
-            --bg-card: #ffffff;
-            --text-main: #2d3436;
-            --text-muted: #636e72;
-            --header-bg: rgba(255, 255, 255, 0.9);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --barva-hlavni: #d32f2f;
+            --barva-pozadi: #ffffff;
+            --barva-textu: #1a1a1a;
+            --barva-sekundarni: #f5f5f5;
+            --stin: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        /* Dark Mode podpora - rok 2026 standard */
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg-light: #0f172a;
-                --bg-card: #1e293b;
-                --text-main: #f1f5f9;
-                --text-muted: #94a3b8;
-                --header-bg: rgba(15, 23, 42, 0.9);
+                --barva-pozadi: #121212;
+                --barva-textu: #e0e0e0;
+                --barva-sekundarni: #1e1e1e;
             }
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-main);
+            font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             line-height: 1.6;
-            overflow-x: hidden;
+            margin: 0;
+            background-color: var(--barva-pozadi);
+            color: var(--barva-textu);
         }
 
-        /* Header s efektem rozmazání (Glassmorphism) */
+        /* Navigace */
         header {
-            position: sticky;
-            top: 0;
-            background: var(--header-bg);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            padding: 1.2rem 5%;
+            border-bottom: 1px solid #ddd;
+            padding: 1rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            background: var(--barva-pozadi);
+            z-index: 100;
         }
 
-        .logo {
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: var(--primary);
-            text-decoration: none;
+        .logo-skupina {
             display: flex;
             align-items: center;
             gap: 12px;
-            transition: var(--transition);
+            text-decoration: none;
+            color: var(--barva-textu);
+            font-weight: bold;
+            font-size: 1.4rem;
         }
 
-        .logo:hover { transform: scale(1.02); }
-
-        nav ul { display: flex; list-style: none; gap: 30px; }
         nav a {
             text-decoration: none;
-            color: var(--text-main);
-            font-weight: 600;
+            color: var(--barva-textu);
+            margin-left: 1.5rem;
             font-size: 0.95rem;
-            transition: var(--transition);
-        }
-        nav a:hover { color: var(--primary); }
-
-        /* Hero sekce */
-        .hero {
-            padding: 8rem 5% 6rem;
-            text-align: center;
-            background: radial-gradient(circle at top right, rgba(255,87,34,0.05), transparent);
         }
 
-        .hero h1 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            letter-spacing: -1px;
+        nav a:hover { color: var(--barva-hlavni); }
+
+        /* Hlavní obsah */
+        main {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 20px;
         }
 
-        .hero p {
-            font-size: 1.25rem;
-            color: var(--text-muted);
-            max-width: 800px;
-            margin: 0 auto 2.5rem;
-        }
-
-        .cta-button {
-            background: var(--primary);
-            color: white;
-            padding: 14px 32px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            box-shadow: 0 10px 20px rgba(255,87,34,0.3);
-            transition: var(--transition);
-            display: inline-block;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-3px);
-            background: var(--primary-hover);
-            box-shadow: 0 15px 25px rgba(255,87,34,0.4);
-        }
-
-        /* Grid článků */
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 5%; }
-        
-        .section-title {
+        .uvod {
             margin-bottom: 3rem;
+            border-left: 4px solid var(--barva-hlavni);
+            padding-left: 20px;
+        }
+
+        h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+        .podnadpis { color: #666; font-size: 1.1rem; }
+
+        /* Mřížka článků */
+        .clanky-seznam {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        article {
+            background: var(--barva-sekundarni);
+            padding: 1.5rem;
+            border-radius: 4px;
+            transition: box-shadow 0.2s;
+        }
+
+        article:hover { box-shadow: var(--stin); }
+
+        .kategorie {
+            color: var(--barva-hlavni);
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        h2 { font-size: 1.4rem; margin: 10px 0; }
+        p { font-size: 0.95rem; margin-bottom: 1.5rem; }
+
+        .odkaz-vice {
+            text-decoration: none;
+            color: var(--barva-hlavni);
+            font-weight: bold;
+        }
+
+        /* Patička */
+        footer {
+            margin-top: 5rem;
+            padding: 3rem 5%;
+            background: var(--barva-sekundarni);
+            font-size: 0.9rem;
+            border-top: 1px solid #ddd;
+        }
+
+        .footer-obsah {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 2rem;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 30px;
-            margin-bottom: 5rem;
-        }
-
-        .card {
-            background: var(--bg-card);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            border: 1px solid rgba(0,0,0,0.03);
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary);
-        }
-
-        .card .meta {
-            font-size: 0.85rem;
-            color: var(--primary);
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-            display: block;
-        }
-
-        .card h3 { margin-bottom: 15px; font-size: 1.5rem; }
-        .card p { color: var(--text-muted); margin-bottom: 20px; flex-grow: 1; }
-
-        /* Footer */
-        footer {
-            background: var(--bg-card);
-            padding: 4rem 5% 2rem;
-            border-top: 1px solid rgba(0,0,0,0.05);
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            margin-bottom: 3rem;
-        }
-
-        .footer-col h4 { margin-bottom: 20px; font-size: 1.1rem; }
-        .footer-col ul { list-style: none; }
-        .footer-col ul li { margin-bottom: 10px; }
-        .footer-col a { text-decoration: none; color: var(--text-muted); transition: 0.2s; }
-        .footer-col a:hover { color: var(--primary); }
-
-        .copyright {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(0,0,0,0.05);
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        /* Adaptabilita pro mobil */
-        @media (max-width: 768px) {
-            nav { display: none; }
-            .hero { padding-top: 5rem; }
-            .grid { grid-template-columns: 1fr; }
+        @media (max-width: 600px) {
+            header { flex-direction: column; gap: 1rem; }
+            nav a { margin: 0 10px; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="#" class="logo">
-            <img src="favicon.ico" alt="" style="width: 32px; height: 32px;">
-            9to5Linux
+        <a href="/" class="logo-skupina">
+            <img src="favicon.ico" alt="" width="32" height="32">
+            <span>9to5Linux</span>
         </a>
         <nav>
-            <ul>
-                <li><a href="#news">Zprávy</a></li>
-                <li><a href="#distro">Distribuce</a></li>
-                <li><a href="#tuts">Návody</a></li>
-                <li><a href="#about">O nás</a></li>
-            </ul>
+            <a href="#zpravy">Zprávy</a>
+            <a href="#navody">Návody</a>
+            <a href="#system">Systém</a>
         </nav>
     </header>
 
     <main>
-        <section class="hero">
-            <h1>Linux bez hranic.<br>Pro lidi, co tvoří budoucnost.</h1>
-            <p>Jsme nezávislý magazín o všem, co pohání váš hardware i servery. Od jádra 6.x až po ty nejmenší vychytávky v terminálu.</p>
-            <a href="#news" class="cta-button">Prozkoumat novinky</a>
+        <section class="uvod">
+            <h1>Dokumentace a aktuality ze světa Linuxu</h1>
+            <p class="podnadpis">Odborný pohled na vývoj distribucí a svobodného softwaru.</p>
         </section>
 
-        <section class="container" id="news">
-            <div class="section-title">
-                <h2>Nejnovější články</h2>
-                <a href="#" style="color: var(--primary); font-weight: 600;">Zobrazit vše →</a>
-            </div>
+        <section class="clanky-seznam">
+            <article>
+                <span class="kategorie">Jádro systému</span>
+                <h2>Stabilní verze Linuxu 6.x uvolněna</h2>
+                <p>Nová verze přináší optimalizaci pro souborové systémy a vylepšenou podporu pro moderní procesorové architektury.</p>
+                <a href="#" class="odkaz-vice">Celý článek →</a>
+            </article>
 
-            <div class="grid">
-                <article class="card">
-                    <span class="meta">Kernel & Systém</span>
-                    <h3>Linux 6.13: Co nás čeká a nemine?</h3>
-                    <p>Podrobný rozbor změn v plánování procesů a vylepšení pro nejnovější procesory od Intelu a AMD.</p>
-                    <a href="#" class="cta-link" style="color: var(--primary); font-weight: 700; text-decoration: none;">Číst analýzu</a>
-                </article>
+            <article>
+                <span class="kategorie">Bezpečnost</span>
+                <h2>Analýza síťových protokolů v roce 2026</h2>
+                <p>Technický rozbor zabezpečení přenosu dat a implementace šifrovacích standardů v rámci linuxových serverů.</p>
+                <a href="#" class="odkaz-vice">Celý článek →</a>
+            </article>
 
-                <article class="card">
-                    <span class="meta">Desktop</span>
-                    <h3>GNOME 48 vs KDE Plasma 6.5</h3>
-                    <p>Srovnání dvou gigantů v roce 2026. Které prostředí nabízí lepší workflow pro programátory?</p>
-                    <a href="#" class="cta-link" style="color: var(--primary); font-weight: 700; text-decoration: none;">Zobrazit srovnání</a>
-                </article>
-
-                <article class="card">
-                    <span class="meta">Bezpečnost</span>
-                    <h3>Zabezpečení Linuxu pro začátečníky</h3>
-                    <p>5 jednoduchých kroků, jak ochránit svůj systém před hrozbami moderního internetu bez ztráty výkonu.</p>
-                    <a href="#" class="cta-link" style="color: var(--primary); font-weight: 700; text-decoration: none;">Chci vědět víc</a>
-                </article>
-            </div>
+            <article>
+                <span class="kategorie">Distribuce</span>
+                <h2>Aktualizace desktopových prostředí</h2>
+                <p>Přehled změn v grafických rozhraních a jejich vliv na efektivitu práce v profesionálním prostředí.</p>
+                <a href="#" class="odkaz-vice">Celý článek →</a>
+            </article>
         </section>
     </main>
 
     <footer>
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <h4>O 9to5Linux</h4>
-                    <p>Jsme komunita nadšenců, kteří věří, že svoboda softwaru mění svět k lepšímu.</p>
-                </div>
-                <div class="footer-col">
-                    <h4>Rychlé odkazy</h4>
-                    <ul>
-                        <li><a href="#">Archiv článků</a></li>
-                        <li><a href="#">Podpořte nás</a></li>
-                        <li><a href="#">RSS kanál</a></li>
-                        <li><a href="#">GitHub Repo</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Sledujte nás</h4>
-                    <ul>
-                        <li><a href="#">Mastodon</a></li>
-                        <li><a href="#">X / Twitter</a></li>
-                        <li><a href="#">Telegram</a></li>
-                    </ul>
-                </div>
+        <div class="footer-obsah">
+            <div>
+                <strong>9to5Linux</strong><br>
+                Nezávislý zdroj technických informací.
             </div>
-            <div class="copyright">
-                &copy; 2026 9to5Linux. Provozováno na <a href="https://pages.github.com" target="_blank">GitHub Pages</a>.
+            <div>
+                <strong>Sekce</strong><br>
+                <a href="#">Redakční kodex</a> | <a href="#">Kontakt</a> | <a href="#">RSS</a>
             </div>
+        </div>
+        <div style="margin-top: 2rem; opacity: 0.7;">
+            &copy; 2026 9to5Linux. Všechna práva vyhrazena. Šířeno pod licencí CC BY-NC.
         </div>
     </footer>
 
