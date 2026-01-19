@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>9to5Linux | Správa systému</title>
+    <style>
+        body { font-family: sans-serif; background: #f0f2f5; margin: 0; padding: 2rem; }
+        .admin-panel { max-width: 1000px; margin: 0 auto; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #d32f2f; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; }
+        .btn-delete { background: #ff5252; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; }
+        .btn-ban { background: #212121; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; }
+        .log { margin-top: 2rem; background: #000; color: #0f0; padding: 1rem; font-family: monospace; font-size: 0.8rem; height: 100px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="admin-panel">
+        <h1>Administrace 9to5Linux</h1>
+        <p>Vítejte, správce. Zde můžete spravovat příspěvky a uživatele.</p>
+
+        <h2>Správa článků</h2>
+        <table>
+            <thead>
+                <tr><th>ID</th><th>Název článku</th><th>Autor</th><th>Akce</th></tr>
+            </thead>
+            <tbody id="clanky-list">
+                <tr id="art-1"><td>001</td><td>Vývoj jádra 6.x</td><td>Admin</td><td><button class="btn-delete" onclick="smazat('art-1', 'Článek 001')">Smazat</button></td></tr>
+                <tr id="art-2"><td>002</td><td>Návod: Arch Linux</td><td>Uživatel123</td><td><button class="btn-delete" onclick="smazat('art-2', 'Článek 002')">Smazat</button></td></tr>
+            </tbody>
+        </table>
+
+        <h2>Správa uživatelů</h2>
+        <table>
+            <thead>
+                <tr><th>Uživatel</th><th>Reputace</th><th>Status</th><th>Akce</th></tr>
+            </thead>
+            <tbody id="user-list">
+                <tr id="user-1"><td>Uživatel123</td><td>120</td><td>Aktivní</td><td><button class="btn-ban" onclick="ban('user-1', 'Uživatel123')">Banovat</button></td></tr>
+                <tr id="user-2"><td>Spammer44</td><td>-500</td><td>Aktivní</td><td><button class="btn-ban" onclick="ban('user-2', 'Spammer44')">Banovat</button></td></tr>
+            </tbody>
+        </table>
+
+        <div class="log" id="system-log">
+            > Systém připraven k administraci...
+        </div>
+    </div>
+
+    <script>
+        function loguj(zprava) {
+            const log = document.getElementById('system-log');
+            log.innerHTML += `<br>> ${new Date().toLocaleTimeString()}: ${zprava}`;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function smazat(id, nazev) {
+            if(confirm(`Opravdu chcete trvale odstranit ${nazev}?`)) {
+                document.getElementById(id).style.display = 'none';
+                loguj(`Smazáno: ${nazev} (Pro trvalé smazání upravte index.html v GitHubu)`);
+            }
+        }
+
+        function ban(id, jmeno) {
+            if(confirm(`Zablokovat uživatele ${jmeno}?`)) {
+                document.getElementById(id).style.color = '#ccc';
+                document.getElementById(id).querySelector('.btn-ban').disabled = true;
+                loguj(`Uživatel ${jmeno} byl zabanován v této relaci.`);
+            }
+        }
+    </script>
+</body>
+</html>
